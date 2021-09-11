@@ -1,4 +1,5 @@
-https://helper-haven.herokuapp.com/
+https://helper-haven.herokuapp.com/\
+By Jackson Lee and Serena Zeng
 
 # Getting Started with Create React App
 
