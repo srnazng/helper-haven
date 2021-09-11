@@ -61,9 +61,6 @@ export const request = async ({ type: reqType, path: url, body: body }) => {
     else {
         data = await fetch(`${URL}${url}`, {
             ...req,
-            headers: new Headers({
-                'Accept': 'application/json'
-            }),
         });
     }
 

@@ -165,12 +165,12 @@ export default function Portfolio({ events, log, updateLog }) {
     async function downloadCSV() {
         let array = await request({
             type: "GET",
-            path: `log/${localStorage.getItem("email")}` // change to any user
+            path: `log/${localStorage.getItem("email")}/` // change to any user
         })
 
         let profile = await request({
             type: "GET",
-            path: `profile/${localStorage.getItem("email")}` // change to any user
+            path: `profile/${localStorage.getItem("email")}/` // change to any user
         })
 
         const link = document.createElement('a');
@@ -218,7 +218,7 @@ export default function Portfolio({ events, log, updateLog }) {
                         >
                             {console.log(events)}
                             {events[0] ?
-                                events.map(event => <MenuItem value={event.event_name}>{event.event_name}</MenuItem>)
+                                events.map(event => <MenuItem key={event.id} value={event.event_name}>{event.event_name}</MenuItem>)
                                 : <TextField
                                     autoFocus
                                     margin="dense"
