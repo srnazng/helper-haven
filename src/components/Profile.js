@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { Button, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Box, Button, Grid, makeStyles, TextField, Typography, 
+InputLabel, MenuItem, FormHelperText, FormControl, Select} from "@material-ui/core";
+import Rating from '@material-ui/lab/Rating';
+
+
 import { request } from "../util";
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: "20px",
         paddingBottom: "30px",
     },
+    row: {
+        marginTop: "30px",
+        display: "flex",
+        paddingLeft: "30px",
+        paddingRight: "30px",
+    },
     grid: {
         marginBottom: "20px"
     },
@@ -37,6 +47,16 @@ const useStyles = makeStyles((theme) => ({
     text: {
         color: "white",
     },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+        flex: 1,
+        marginTop: -10,
+        marginRight: 40,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2),
+    },
 }));
 
 export default function Profile({ profile, updateProfile }) {
@@ -47,6 +67,8 @@ export default function Profile({ profile, updateProfile }) {
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState("");
+    const [value, setValue] = useState(2);
+    const [age, setAge] = useState("");
 
     async function editProfile() {
         let email = localStorage.getItem("email");
@@ -63,26 +85,36 @@ export default function Profile({ profile, updateProfile }) {
         console.log(response);
     }
 
+    const handleChange = (event) => {
+        setAge(event.target.value);
+    };
+
     return (
         <div >
             <Grid container
                 direction="row"
                 justifyContent="center"
                 alignItems="stretch"
-                spacing={3}
+                spacing={10}
                 className={classes.container}>
                 <Grid item xs={10}>
                     <div >
                         <Typography variant="h3" >Edit Profile</Typography>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={5} xl={5}>
+                <Grid item xs={12} sm={10} md={6} lg={5} xl={5}>
                     <div className={classes.box}>
                         <Typography variant="h6" >Personal Information</Typography>
                         <form autoComplete="off">
                             <TextField id="standard-basic" defaultValue={firstname} label="First Name" className={classes.input} onChange={(e) => setFirstname(e.target.value)} />
                             <br />
                             <TextField id="standard-basic" defaultValue={lastname} label="Last Name" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
+                            <br />
+                            <TextField id="standard-basic" defaultValue={lastname} label="Address" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
+                            <br />
+                            <TextField id="standard-basic" defaultValue={lastname} label="State" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
+                            <br />
+                            <TextField id="standard-basic" defaultValue={lastname} label="Zip Code" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
                             <br />
                             <Typography variant="body1">
                                 {error}
@@ -92,6 +124,34 @@ export default function Profile({ profile, updateProfile }) {
                                 Save
                             </Button>
                         </form>
+                    </div>
+                </Grid>
+                <Grid item xs={12} sm={10} md={6} lg={5} xl={5}>
+                    <div className={classes.box}>
+                        <Typography variant="h6" >Skills</Typography>
+                        <div className={classes.row}>
+                        <FormControl className={classes.formControl}>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={age}
+                                onChange={handleChange}
+                                >
+                                <MenuItem value={"Java"}>Java</MenuItem>
+                                <MenuItem value={"Python"}>Python</MenuItem>
+                                <MenuItem value={"Communication"}>Communication</MenuItem>
+                            </Select>
+                        </FormControl>
+                            <Rating
+                                style = {{flex:1}}
+                                name="simple-controlled"
+                                value={value}
+                                onChange={(event, newValue) => {
+                                    setValue(newValue);
+                                }}
+                                max = {10}
+                            />
+                        </div>
                     </div>
                 </Grid>
             </Grid>
