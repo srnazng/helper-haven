@@ -216,7 +216,6 @@ export default function Portfolio({ events, log, updateLog }) {
                             align="left"
                             onChange={(e) => setEventName(e.target.value)}
                         >
-                            {console.log(events)}
                             {events[0] ?
                                 events.map(event => <MenuItem key={event.id} value={event.event_name}>{event.event_name}</MenuItem>)
                                 : <TextField

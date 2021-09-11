@@ -47,11 +47,11 @@ export default function Dashboard({ page, setPage }) {
             path: `profile/${localStorage.getItem("email")}/` // change to any user
         })
         setProfile(response);
-        console.log(response);
     };
 
     useEffect(() => {
-        if (Object.keys(profile).length === 0 || !profile.first_name) {
+        console.log("Update profile");
+        if (Object.keys(profile).length === 0) {
             updateProfile();
         }
         else {
@@ -64,6 +64,7 @@ export default function Dashboard({ page, setPage }) {
 
     // JANJ events
     const updateEvents = async () => {
+        console.log("Update events")
         let response = await request({
             type: "GET",
             path: "events/"
@@ -85,6 +86,7 @@ export default function Dashboard({ page, setPage }) {
 
     // User volunteer and participation log 
     const updateLog = async () => {
+        console.log("Update log");
         let response = await request({
             type: "GET",
             path: `log/${localStorage.getItem("email")}/` // change to any user

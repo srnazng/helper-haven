@@ -51,7 +51,7 @@ export const request = async ({ type: reqType, path: url, body: body }) => {
             req.body = JSON.stringify(body);
         }
 
-        data = await fetch(`${URL}${url}`, {
+        data = await fetch(`${URL}/${url}`, {
             ...req,
             headers: new Headers({
                 "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export const request = async ({ type: reqType, path: url, body: body }) => {
         });
     }
     else {
-        data = await fetch(`${URL}${url}`, {
+        data = await fetch(`${URL}/${url}`, {
             ...req,
         });
     }

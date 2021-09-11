@@ -111,7 +111,8 @@ export default function Register({ setPage, setToken }) {
             setError(response.username);
         }
         else {
-            setError("Error creating account. Contact admin at adptechchallenge@gmail.com.");
+            console.log(response);
+            setError("Error creating account.");
         }
     }
 
