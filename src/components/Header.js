@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { AppBar, Avatar, IconButton, makeStyles, Menu, MenuItem, Toolbar, Typography } from "@material-ui/core";
+import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,13 +47,14 @@ export default function Header({ setPage }) {
         setPage("login");
         localStorage.setItem("token", "");
         localStorage.setItem("email", "");
+        localStorage.setItem("role", "");
     }
 
     return (
         <div>
             <AppBar position="static">
                 <Toolbar>
-                    <img src="/logo.png" className={classes.logo} />
+                    <img onClick={() => setPage("dashboard")} src="/logo.png" className={classes.logo} />
                     <Typography variant="h5" gutterBottom className={classes.title}>Dashboard</Typography>
                     <IconButton
                         aria-label="account of current user"
@@ -60,7 +62,7 @@ export default function Header({ setPage }) {
                         aria-haspopup="true"
                         onClick={handleMenu}
                         className={classes.avatar} >
-                        <Avatar alt="profile" src="/profile_default.png" />
+                        <MenuIcon />
                     </IconButton>
                     <Menu
                         id="menu-appbar"
