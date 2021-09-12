@@ -170,14 +170,14 @@ export default function Portfolio({ events, log, updateLog }) {
 
         let profile = await request({
             type: "GET",
-            path: `profile/${localStorage.getItem("email")}/` // change to any user
+            path: `volunteer/${localStorage.getItem("email")}/` // change to any user
         })
 
         const link = document.createElement('a');
         let csv = convertArrayOfObjectsToCSV(array);
         if (csv == null) return;
 
-        const filename = profile.first_name + ' ' + profile.last_name + ' JANJ Volunteer Log.csv';
+        const filename = profile.first_name + ' ' + profile.last_name + ' Helper Haven Volunteer Log.csv';
 
         if (!csv.match(/^data:text\/csv/i)) {
             csv = `data:text/csv;charset=utf-8,${csv}`;

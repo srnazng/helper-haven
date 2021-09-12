@@ -186,19 +186,21 @@ export default function Portfolio({ events, profile, updateEvents }) {
     async function downloadCSV() {
         let array = await request({
             type: "GET",
-            path: `log/${localStorage.getItem("email")}/` // change to any user
+            path: `events/`
         })
+
+        array = array.filter(event => event.org_email === localStorage.getItem("email"));
 
         let profile = await request({
             type: "GET",
-            path: `profile/${localStorage.getItem("email")}/` // change to any user
+            path: `organization/${localStorage.getItem("email")}/`
         })
 
         const link = document.createElement('a');
         let csv = convertArrayOfObjectsToCSV(array);
         if (csv == null) return;
 
-        const filename = profile.first_name + ' ' + profile.last_name + ' JANJ Volunteer Log.csv';
+        const filename = profile.name;
 
         if (!csv.match(/^data:text\/csv/i)) {
             csv = `data:text/csv;charset=utf-8,${csv}`;
