@@ -6,6 +6,7 @@ import Portfolio from "../components/Portfolio";
 import Stats from "../components/Stats";
 import Profile from "../components/Profile";
 import OrgProfile from "../components/OrgProfile";
+import OrgEventsList from "../components/OrgEventsList";
 import { Grid, makeStyles } from "@material-ui/core";
 import { request } from "../util";
 
@@ -65,11 +66,7 @@ export default function Dashboard({ page, setPage }) {
             await updateRole();
         }
         if (role === "ORGANIZATION") {
-            let response = await request({
-                type: "GET",
-                path: `organization/${localStorage.getItem("email")}/` // change to any user
-            })
-            setProfile(response);
+
         }
         else {
             let response = await request({
@@ -137,7 +134,7 @@ export default function Dashboard({ page, setPage }) {
         }
     });
 
-    if (role == "VOLUNTEER") {
+    if (role=="VOLUNTEER"){
         return (
             <div align="center" className={classes.root}>
                 <Header setPage={setPage} />
@@ -179,7 +176,7 @@ export default function Dashboard({ page, setPage }) {
             </div>
         )
     }
-    else {
+    else{
         return (
             <div align="center" className={classes.root}>
                 <Header setPage={setPage} />
@@ -203,7 +200,10 @@ export default function Dashboard({ page, setPage }) {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
                             <div className={classes.box}>
-
+                                <OrgEventsList
+                                    events={Object.keys(events).length !== 0 ? events.filter(event => (event.active == true)) : events}
+                                    log={log}
+                                    updateLog={updateLog} />
                             </div>
                         </Grid>
                     </Grid>
