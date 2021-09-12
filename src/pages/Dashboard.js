@@ -5,6 +5,7 @@ import UpcomingEvents from "../components/UpcomingEvents";
 import Portfolio from "../components/Portfolio";
 import Stats from "../components/Stats";
 import Profile from "../components/Profile";
+import OrgProfile from "../components/OrgProfile";
 import { Grid, makeStyles } from "@material-ui/core";
 import { request } from "../util";
 
@@ -132,44 +133,83 @@ export default function Dashboard({ page, setPage }) {
         }
     });
 
-    return (
-        <div align="center" className={classes.root}>
-            <Header setPage={setPage} />
-            {page === "dashboard" ?
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="stretch"
-                    spacing={3}
-                    className={classes.container}>
-                    <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
-                        <div className={classes.box}>
-                            <ProfileSummary profile={profile} />
-                        </div>
+    if (role=="VOLUNTEER"){
+        return (
+            <div align="center" className={classes.root}>
+                <Header setPage={setPage} />
+                {page === "dashboard" ?
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="stretch"
+                        spacing={3}
+                        className={classes.container}>
+                        <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
+                            <div className={classes.box}>
+                                <ProfileSummary profile={profile} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
+                            <div className={classes.box}>
+                                <Stats log={log} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
+                            <div className={classes.box}>
+                                <Portfolio
+                                    events={Object.keys(events).length !== 0 ? events.filter(event => (event.active == true)) : events}
+                                    log={log}
+                                    updateLog={updateLog} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
+                            <div className={classes.box}>
+                                <UpcomingEvents events={Object.keys(events).length !== 0 ? events.filter(event => (event.upcoming == true)) : events} />
+                            </div>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
-                        <div className={classes.box}>
-                            <Stats log={log} />
-                        </div>
+                    : <Profile profile={profile} updateProfile={updateProfile} />
+                }
+                <br /><br /><br />
+            </div>
+        )
+    }
+    else{
+        return (
+            <div align="center" className={classes.root}>
+                <Header setPage={setPage} />
+                {page === "dashboard" ?
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="stretch"
+                        spacing={3}
+                        className={classes.container}>
+                        <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
+                            <div className={classes.box}>
+                                <ProfileSummary profile={profile} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
+                            <div className={classes.box}>
+                                <Stats log={log} />
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
+                            <div className={classes.box}>
+                                <OrgEventsList
+                                    events={Object.keys(events).length !== 0 ? events.filter(event => (event.active == true)) : events}
+                                    log={log}
+                                    updateLog={updateLog} />
+                            </div>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
-                        <div className={classes.box}>
-                            <Portfolio
-                                events={Object.keys(events).length !== 0 ? events.filter(event => (event.active == true)) : events}
-                                log={log}
-                                updateLog={updateLog} />
-                        </div>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
-                        <div className={classes.box}>
-                            <UpcomingEvents events={Object.keys(events).length !== 0 ? events.filter(event => (event.upcoming == true)) : events} />
-                        </div>
-                    </Grid>
-                </Grid>
-                : <Profile profile={profile} updateProfile={updateProfile} />
-            }
-            <br /><br /><br />
-        </div>
-    )
+                    : <OrgProfile profile={profile} updateProfile={updateProfile} />
+                }
+                <br /><br /><br />
+            </div>
+        )
+    }
 }
