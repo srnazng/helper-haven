@@ -105,12 +105,9 @@ export default function Login({ setPage, setToken }) {
                 </form>
                 <Typography variant="overline">
                     <Link href="#" onClick={(e) => register(e)}>
-                        <u>Register as Volunteer</u>
+                        <u>Register</u>
                     </Link>
                     <br />
-                    <Link href="#">
-                        <u>Register as Organization</u>
-                    </Link>
                 </Typography>
             </Paper>
         </div>

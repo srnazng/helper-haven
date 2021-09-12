@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import {
     Button,
     CircularProgress,
+    FormControl,
+    InputLabel,
     Link,
     makeStyles,
+    MenuItem,
     Paper,
+    Select,
     TextField,
     Typography
 } from "@material-ui/core";
-import { requestVolunteerRegister } from "../util";
+import { requestRegister } from "../util";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,13 +67,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Register({ setPage, setToken }) {
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [role, setRole] = useState("VOLUNTEER");
 
     const classes = useStyles();
     const login = (e) => {
@@ -88,27 +91,24 @@ export default function Register({ setPage, setToken }) {
         }
 
         setLoading(true);
-        let response = await requestVolunteerRegister(firstname, lastname, email, password, password2);
+        let response = await requestRegister(email, role.toUpperCase(), password, password2);
         setLoading(false);
 
         if (response && response.token) {
             localStorage.setItem('token', response.token);
             localStorage.setItem('email', email);
             setError("");
-            setPage("dashboard");
+            setPage("profile");
             setToken(localStorage.getItem("token"));
-        }
-        else if (response && response.first_name) {
-            setError(response.first_name);
-        }
-        else if (response && response.last_name) {
-            setError(response.last_name);
         }
         else if (response && response.email) {
             setError(response.email);
         }
         else if (response && response.username) {
             setError(response.username);
+        }
+        else if (response && response.role) {
+            setError(response.role);
         }
         else {
             console.log(response);
@@ -121,12 +121,20 @@ export default function Register({ setPage, setToken }) {
             <Paper className={classes.paper}>
                 <img src="/logo-dark.png" className={classes.image} />
                 <Typography variant="h4" className={classes.title}>
-                    Volunteer Registration
+                    Register
                 </Typography>
                 <form>
-                    <TextField id="firstname" label="First Name" className={classes.input} onChange={(e) => setFirstname(e.target.value)} />
-                    <br />
-                    <TextField id="lastname" label="Last Name" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
+                    <FormControl className={classes.input}>
+                        <InputLabel id="event_name">Account Type</InputLabel>
+                        <Select
+                            labelId="event_name"
+                            align="left"
+                            onChange={(e) => setRole(e.target.value)}
+                        >
+                            < MenuItem value="VOLUNTEER">Volunteer</MenuItem>
+                            < MenuItem value="ORGANIZATION">Organization</MenuItem>
+                        </Select>
+                    </FormControl>
                     <br />
                     <TextField id="email" label="Email" className={classes.input} onChange={(e) => setEmail(e.target.value)} />
                     <br />

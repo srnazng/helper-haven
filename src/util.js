@@ -1,12 +1,10 @@
 import { URL } from "./constants";
 
-export const requestVolunteerRegister = async (firstname, lastname, email, password, password2) => {
+export const requestRegister = async (email, role, password, password2) => {
     let request = { method: "POST" };
     let info = {
-        first_name: firstname,
-        last_name: lastname,
         email: email,
-        role: "VOLUNTEER",
+        role: role,
         username: email,
         password: password,
         password2: password2

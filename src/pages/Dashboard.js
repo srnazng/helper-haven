@@ -38,15 +38,41 @@ export default function Dashboard({ page, setPage }) {
     const classes = useStyles();
     const [events, setEvents] = useState({});
     const [log, setLog] = useState({});
+    const [role, setRole] = useState("")
     const [profile, setProfile] = useState({});
+
+    // User role
+    const updateRole = async () => {
+        let response = await request({
+            type: "GET",
+            path: `account/${localStorage.getItem("email")}/` // change to any user
+        })
+        setRole(response.role);
+        localStorage.setItem('role', response.role);
+    };
+
+    useEffect(() => {
+        console.log("Update role");
+        if (!(role === "VOLUNTEER" || role === "ORGANIZATION")) {
+            updateRole();
+        }
+    })
 
     // User profile 
     const updateProfile = async () => {
-        let response = await request({
-            type: "GET",
-            path: `profile/${localStorage.getItem("email")}/` // change to any user
-        })
-        setProfile(response);
+        if (!(role === "VOLUNTEER" || role === "ORGANIZATION")) {
+            await updateRole();
+        }
+        if (role === "ORGANIZATION") {
+
+        }
+        else {
+            let response = await request({
+                type: "GET",
+                path: `volunteer/${localStorage.getItem("email")}/` // change to any user
+            })
+            setProfile(response);
+        }
     };
 
     useEffect(() => {
