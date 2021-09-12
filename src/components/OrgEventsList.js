@@ -31,9 +31,15 @@ const useStyles = makeStyles((theme) => ({
     },
     row: {
         marginTop: "30px",
-        
+
         paddingLeft: "30px",
         paddingRight: "30px",
+    },
+    select: {
+        minWidth: "200px",
+        marginRight: "30px",
+        marginLeft: "10px",
+        marginTop: "10px"
     },
     formControl: {
         margin: theme.spacing(1),
@@ -42,29 +48,29 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: -40,
         minWidth: 100
     },
-    
+    input: {
+        minWidth: "300px",
+        width: "100%",
+        marginBottom: "20px",
+    },
 }));
 
-export default function Portfolio({ events, log, updateLog }) {
+export default function Portfolio({ events, profile, updateEvents }) {
     const classes = useStyles();
     const [eventName, setEventName] = useState("");
-    const [customEventName, setCustomEventName] = useState("");
-    const [role, setRole] = useState("");
+    const [roleDescription, setRoleDescription] = useState("");
     const [hours, setHours] = useState(0);
     const [comments, setComments] = useState("");
     const [error, setError] = useState("");
-    
-    const [eventAddress, setEventAddress] = useState("");
-    const [eventState, setEventState] = useState("");
-    const [eventCity, setEventCity] = useState("");
-    const [eventStartTime, setStartTime] = useState("");
-    const [eventEndTime, setEndTime] = useState("");
-    const [eventZip, setEventZip] = useState("");
+    const [eventLocation, setEventLocation] = useState("");
+    const [eventDate, setDate] = useState("");
+    const [eventTime, setTime] = useState("");
     const [eventDescription, setEventDescription] = useState("");
+    const [link, setLink] = useState("");
     const [skillData, setSkills] = useState([
         {
-          name: "Programming",
-          strength: "1"
+            name: "",
+            strength: "0"
         }
     ]);
 
@@ -74,6 +80,11 @@ export default function Portfolio({ events, log, updateLog }) {
     };
 
     const handleClose = () => {
+        setEventName("");
+        setEventLocation("");
+        setDate("");
+        setTime("");
+        setSkills("");
         setOpenDialog(false);
     };
 
@@ -85,86 +96,62 @@ export default function Portfolio({ events, log, updateLog }) {
             grow: 2
         },
         {
-            name: "Role",
-            selector: "role",
+            name: "Summary",
+            selector: "event_summary",
             sortable: false,
-            grow: 2
+            grow: 3
         },
         {
-            name: "Hours",
-            selector: "hours",
+            name: "Location",
+            selector: "location",
+            sortable: false,
+        },
+        {
+            name: "Date",
+            selector: "date",
             sortable: true,
-        },
-        {
-            name: "Comments",
-            selector: "comments",
-            sortable: false,
-            grow: 3,
         }
     ];
 
-    function handleHoursChange(event) {
-        if (event.target.value < 0) {
-            event.target.value = 0;
-        }
-        setHours(event.target.value);
-    }
-
     async function addEvent() {
         let event = eventName;
-        if (eventName === "Other") {
-            event = customEventName;
-        }
+        let skills = JSON.stringify(skillData);
         let response = await request({
             type: "POST",
-            path: "log/add/", // change to any user
+            path: "events/",
             body: {
                 event_name: event,
-                user_email: localStorage.getItem("email"),
-                role: role,
-                hours: hours,
-                comments: comments
+                org_name: profile.name,
+                org_email: localStorage.getItem("email"),
+                event_summary: eventDescription,
+                role_description: roleDescription,
+                link: link,
+                location: eventLocation,
+                date: eventDate,
+                time: eventTime,
+                skills: skills,
             }
         });
 
-        if (response.response !== "Successfully added new log entry.") {
+        if (response.response !== "Successfully added new event.") {
             if (response.event_name) {
                 setError("Event Name: " + response.comments);
-                return;
-            }
-            else if (response.user_email) {
-                setError("Error with user email");
-                return;
-            }
-            else if (response.event_id) {
-                setError("Error with event id");
-                return;
-            }
-            else if (response.role) {
-                setError("Role: " + response.role);
-                return;
-            }
-            else if (response.hours) {
-                setError("Hours: " + response.hours);
-                return;
-            }
-            else if (response.comments) {
-                setError("Comments: " + response.comments);
                 return;
             }
         }
         else {
             setEventName("");
-            setCustomEventName("");
-            setRole("");
-            setHours("");
-            setComments("");
         }
 
         console.log(response);
         setError("");
-        updateLog();
+        setEventName("");
+        setEventLocation("");
+        setDate("");
+        setTime("");
+        setSkills("");
         handleClose();
+        updateEvents();
     }
 
     // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
@@ -246,7 +233,7 @@ export default function Portfolio({ events, log, updateLog }) {
     const appendRow = () => {
         let newArr = [...skillData];
         newArr.push({
-            name: "Programming",
+            name: "",
             strength: "0"
         });
         setSkills(newArr);
@@ -273,19 +260,19 @@ export default function Portfolio({ events, log, updateLog }) {
                 </Select>
             </FormControl>
             <Rating
-                style={{ flex: 1}}
+                style={{ flex: 1 }}
                 precision={0.5}
                 value={skillData[ind].strength}
                 onChange={updateStrength(ind)}
                 max={5}
-                
+
             />
             <IconButton
                 variant="contained"
                 color="secondary"
                 className={classes.button}
                 onClick={deleteRow(ind)}
-                style={{ flex: 1, marginTop: -20, marginLeft: 50, maxHeight: 20, maxWidth: 20, minWidth: 20, minHeight: 20 }}>
+                style={{ marginTop: 5, marginLeft: 100, maxHeight: 20, maxWidth: 20, minWidth: 20, minHeight: 20 }}>
                 <Delete />
             </IconButton>
         </div>
@@ -301,7 +288,7 @@ export default function Portfolio({ events, log, updateLog }) {
             <DataTable
                 className={classes.table}
                 columns={columns}
-                data={log}
+                data={events}
                 pagination
                 persistTableHead
                 //noHeader={Object.keys(log).length === 0 || log.length == 0 || log[0] === undefined || log[0] === null ? true : false}
@@ -316,76 +303,79 @@ export default function Portfolio({ events, log, updateLog }) {
                         margin="dense"
                         id="name"
                         label="Event Name"
-                        helperText="Event Name"
                         fullWidth
+                        className={classes.input}
                         onChange={(e) => setEventName(e.target.value)}
                     />
-                    <br />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="address"
-                        label="Address"
-                        helperText="Address"
+                        id="name"
+                        label="Description"
                         fullWidth
-                        onChange={(e) => setEventAddress(e.target.value)}
-                    />
-                    <br />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="city"
-                        label="City"
-                        helperText="City"
-                        fullWidth
-                        onChange={(e) => setEventCity(e.target.value)}
-                    />
-                    <br />
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="state"
-                        label="State"
-                        helperText="State"
-                        fullWidth
-                        onChange={(e) => setEventState(e.target.value)}
+                        className={classes.input}
+                        onChange={(e) => setEventDescription(e.target.value)}
                     />
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="zip"
-                        label="Zip Code"
+                        id="name"
+                        label="Volunteer Role"
                         fullWidth
-                        onChange={(e) => setEventZip(e.target.value)}
+                        className={classes.input}
+                        onChange={(e) => setRoleDescription(e.target.value)}
                     />
-
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="link"
+                        label="Link"
+                        fullWidth
+                        className={classes.input}
+                        onChange={(e) => setLink(e.target.value)}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="location"
+                        label="Location"
+                        fullWidth
+                        className={classes.input}
+                        onChange={(e) => setEventLocation(e.target.value)}
+                    />
+                    <br /><br />
+                    <TextField
+                        id="date"
+                        label="Date"
+                        type="date"
+                        fullWidth
+                        required
+                        defaultValue={eventDate}
+                        className={classes.input}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={(e) => setDate(e.target.value)}
+                    />
                     <TextField
                         id="time"
-                        label="Start"
+                        label="Time"
                         type="time"
-                        style = {{marginRight:20}}
+                        fullWidth
                         inputProps={{
-                        step: 300, // 5 min
+                            step: 300, // 5 min,
                         }}
-                        onChange={(e) => setStartTime(e.target.value)}
-                    />
-                    <TextField
-                        id="time"
-                        label="End"
-                        type="time"
-                        style = {{marginLeft:20, marginRight:20}}
-                        
-                        inputProps={{
-                        step: 300, // 5 min
+                        InputLabelProps={{
+                            shrink: true,
                         }}
-                        onChange={(e) => setStartTime(e.target.value)}
+                        className={classes.input}
+                        onChange={(e) => setTime(e.target.value)}
                     />
-
-                    
-                    <Typography variant="h6" style = {{textAlign: "center", marginTop: 20}}>Needed Skills</Typography>
+                    <Typography variant="h6" style={{ marginTop: 20 }}>Needed Skills</Typography>
                     {[...Array(skillData.length)].map((_, i) => <SkillRow ind={i} key={i} />)}
+                    <br />
                     <IconButton className={classes.button} onClick={appendRow} style={{ marginTop: 20 }}>
-                            <AddCircleOutlineIcon />
+                        <AddCircleOutlineIcon />
                     </IconButton>
                     <Typography variant="body1">
                         {error}

@@ -17,7 +17,7 @@ export default function ProfileSummary({ profile }) {
     return (
         <div >
             <img src="/profile_default.png" className={classes.image} />
-            <Typography variant="body1" className={classes.text}>{profile.first_name + " " + profile.last_name}</Typography>
+            <Typography variant="body1" className={classes.text}>{localStorage.getItem("role") === "ORGANIZATION" ? profile.name : profile.first_name + " " + profile.last_name}</Typography>
         </div>
     )
 }

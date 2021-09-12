@@ -63,6 +63,17 @@ export default function UpcomingEvents({ events }) {
         }
     ];
 
+    const Skills = ({ skills }) => {
+        console.log(skills);
+        return (
+            <div>
+                <br />
+                Preferred Skills:
+                {skills.map(skill => <div>{skill.name}</div>)}
+            </div>
+        );
+    }
+
     const ExpandedComponent = ({ data }) => {
         return (
             <div className={classes.root}>
@@ -74,8 +85,10 @@ export default function UpcomingEvents({ events }) {
                         <Typography variant="body1" xs={12}>
                             Event Summary: {data.event_summary} <br />
                             Volunteer Role: {data.role_description} <br />
-                            Location: {data.location} <br />
-                            Time: {data.time} <br /><br />
+                            {data.location != "" ? "Location: " + data.location : ""}
+                            {data.location != "" ? <br /> : ""}
+                            Date: {data.date} <br />
+                            Time: {data.time} <br />
                             {data.contact_name !== "" && data.contact_name !== undefined ?
                                 "For more information contact " + data.contact_name
                                 : (data.contact_email !== "" && data.contact_email !== undefined) || (data.contact_number != "" && data.contact_number !== undefined)
@@ -85,6 +98,7 @@ export default function UpcomingEvents({ events }) {
                             {(data.contact_email !== "" && data.contact_email !== undefined) && (data.contact_number != "" && data.contact_number !== undefined) ? <br /> : ""}
                             {data.contact_number !== "" && data.contact_number !== undefined ? data.contact_number : ""}
                             {(data.contact_email !== "" && data.contact_email !== undefined) || (data.contact_number != "" && data.contact_number !== undefined) ? <br /> : ""}
+                            {data.skills ? <div><Skills skills={JSON.parse(data.skills)} /></div> : ""}
                         </Typography>
                         {data.link !== "" && data.link !== undefined ?
                             <Grid item>
