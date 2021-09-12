@@ -133,7 +133,7 @@ export default function Dashboard({ page, setPage }) {
         }
     });
 
-    if (role=="VOLUNTEER"){
+    if (role == "VOLUNTEER") {
         return (
             <div align="center" className={classes.root}>
                 <Header setPage={setPage} />
@@ -175,7 +175,7 @@ export default function Dashboard({ page, setPage }) {
             </div>
         )
     }
-    else{
+    else {
         return (
             <div align="center" className={classes.root}>
                 <Header setPage={setPage} />
@@ -199,10 +199,7 @@ export default function Dashboard({ page, setPage }) {
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
                             <div className={classes.box}>
-                                <OrgEventsList
-                                    events={Object.keys(events).length !== 0 ? events.filter(event => (event.active == true)) : events}
-                                    log={log}
-                                    updateLog={updateLog} />
+
                             </div>
                         </Grid>
                     </Grid>
