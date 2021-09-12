@@ -68,7 +68,7 @@ export default function UpcomingEvents({ events }) {
         return (
             <div>
                 <br />
-                Preferred Skills:
+                <b>Preferred Skills:</b>
                 {skills.map(skill => <div>{skill.name}</div>)}
             </div>
         );
