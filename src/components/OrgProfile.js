@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Box, Button, Grid, makeStyles, TextField, Typography, 
-InputLabel, MenuItem, FormHelperText, FormControl, Select, InputAdornment} from "@material-ui/core";
+import {
+    Box, Button, Grid, makeStyles, TextField, Typography,
+    InputLabel, MenuItem, FormHelperText, FormControl, Select, InputAdornment
+} from "@material-ui/core";
 import Rating from '@material-ui/lab/Rating';
 
 
@@ -59,116 +61,74 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile({ profile, updateProfile }) {
     const classes = useStyles();
-    const [email, setEmail] = useState("");
-    const [website, setWebsite] = useState("");
-    const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [state, setState] = useState("");
-    const [zip, setZip] = useState("");
-    const [description, setDescription] = useState("");
+    const [name, setName] = useState(profile.name || "");
+    const [email, setEmail] = useState(profile.email || "");
+    const [website, setWebsite] = useState(profile.link || "");
+    const [phone, setPhone] = useState(profile.phone || "");
+    const [address, setAddress] = useState(profile.address || "");
+    const [city, setCity] = useState(profile.city || "");
+    const [state, setState] = useState(profile.state || "");
+    const [zip, setZip] = useState(profile.zip || "");
+    const [description, setDescription] = useState(profile.description || "");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState("");
-    const [type, setType] = React.useState('');
-
-    const [skillData, setSkills] = useState([
-        {
-          name: "Python",
-          strength: "1"
-        }
-    ]);
+    const [type, setType] = useState(profile.category || "")
 
     async function editProfile() {
         let email = localStorage.getItem("email");
-        let response = await request({
-            type: "PATCH",
-            path: `edit-profile/${email}/`,
-            body: {
-                first_name: "Change later",
-                last_name: "Change later"
-            }
-        })
+        let response;
 
+        if (name === "" || description === "" || type === "") {
+            setError("Fill all required fields.")
+            return;
+        }
+
+        if (website !== "") {
+            response = await request({
+                type: "PATCH",
+                path: `edit-organization/${email}/`,
+                body: {
+                    name: name,
+                    category: type,
+                    description: description,
+                    link: website,
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    state: state,
+                    zip: zip,
+                }
+            })
+        }
+        else {
+            response = await request({
+                type: "PATCH",
+                path: `edit-organization/${email}/`,
+                body: {
+                    name: name,
+                    category: type,
+                    description: description,
+                    phone: phone,
+                    address: address,
+                    city: city,
+                    state: state,
+                    zip: zip,
+                }
+            })
+        }
         updateProfile();
         console.log(response);
-    }
-
-    const updateSkill = index => e => {
-        console.log(index);
-        let newArr = [...skillData];
-        newArr[index].name = e.target.value;
-        setSkills(newArr);
-        console.log(skillData);
-    };
-
-
-    const updateStrength = index => e => {
-        let newArr = [...skillData];
-        newArr[index].strength = e.target.value;
-        setSkills(newArr);
-
+        if (response.response) {
+            setError(response.response);
+            return;
+        }
+        setError("");
     }
 
     const updateType = (event) => {
         setType(event.target.value);
-      };
-
-    const deleteRow = index => e => {
-        let newArr = [...skillData];
-        newArr.splice(index, 1);
-        setSkills(newArr);
-    }
-
-
-    const appendRow = () => {
-        let newArr = [...skillData];
-        newArr.push({
-            name: "Python",
-            strength: "1" 
-        });
-        setSkills(newArr);
-    }
-
-    const SkillRow = ({ind}) => 
-    <div className={classes.row}>
-
-        <FormControl className={classes.formControl}>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={skillData[ind].name}
-                onChange={updateSkill(ind)}
-                >
-                <MenuItem value={"Education"}>Education</MenuItem>
-                <MenuItem value={"Python"}>Animal</MenuItem>
-                <MenuItem value={"Communication"}>Environmental</MenuItem>
-                <MenuItem value={"Communication"}>Poverty Relief</MenuItem>
-                <MenuItem value={"Communication"}>Medical</MenuItem>
-                <MenuItem value={"Communication"}>Religious</MenuItem>
-                <MenuItem value={"Communication"}>Other</MenuItem>
-            </Select>
-        </FormControl>
-            <Rating
-                style = {{flex:1}}
-                precision = {0.5}
-                value={skillData[ind].strength}
-                onChange={updateStrength(ind)}
-                max = {5}
-            />
-
-        <Button 
-        variant="contained" 
-        color="primary" 
-        className={classes.button} 
-        onClick={deleteRow(ind)} 
-        style = {{flex:1, marginLeft: 5, maxHeight: 20, maxWidth: 20, minWidth: 20, minHeight: 20}}>
-            X
-        </Button>
-        
-
-    </div>
-
+    };
 
     return (
         <div >
@@ -180,22 +140,23 @@ export default function Profile({ profile, updateProfile }) {
                 className={classes.container}>
                 <Grid item xs={10}>
                     <div >
-                        <Typography variant="h3" >Edit Profiles</Typography>
+                        <Typography variant="h3" >Organization Profile</Typography>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={10} xl={10}>
                     <div className={classes.box}>
                         <form autoComplete="off">
-                            <TextField id="standard-basic" defaultValue={""} label="Organization Name" className={classes.input}/>
+                            <TextField required id="standard-basic" defaultValue={name} label="Organization Name" className={classes.input} onChange={(e) => setName(e.target.value)} />
                             <br />
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="demo-simple-select-label">Type of Organization</InputLabel>
+                            <FormControl className={classes.formControl} required>
+                                <InputLabel id="demo-simple-select-label">Category</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     value={type}
                                     onChange={updateType}
-                                    >
+                                    align="left"
+                                >
                                     <MenuItem value={"Education"}>Education</MenuItem>
                                     <MenuItem value={"Animal"}>Animal</MenuItem>
                                     <MenuItem value={"Environmental"}>Environmental</MenuItem>
@@ -205,10 +166,19 @@ export default function Profile({ profile, updateProfile }) {
                                     <MenuItem value={"Other"}>Other</MenuItem>
                                 </Select>
                             </FormControl>
+                            <TextField required id="standard-basic" defaultValue={description} label="Description" className={classes.input} onChange={(e) => setDescription(e.target.value)} />
                             <br />
-                            <TextField id="standard-basic" defaultValue={website} label="Website" className={classes.input} onChange={(e) => setWebsite(e.target.value)}/>
+                            <TextField id="standard-basic" defaultValue={website} label="Website" className={classes.input} onChange={(e) => setWebsite(e.target.value)} />
                             <br />
-                            <TextField id="standard-basic" defaultValue={email} label="Email" className={classes.input} onChange={(e) => setEmail(e.target.value)} />
+                            <TextField
+                                InputProps={{
+                                    readOnly: true,
+                                }}
+                                id="standard-basic"
+                                defaultValue={email}
+                                label="Email"
+                                className={classes.input}
+                                onChange={(e) => setEmail(e.target.value)} />
                             <br />
                             <TextField id="standard-basic" defaultValue={phone} label="Phone" className={classes.input} onChange={(e) => setPhone(e.target.value)} />
                             <br />
@@ -219,11 +189,6 @@ export default function Profile({ profile, updateProfile }) {
                             <TextField id="standard-basic" defaultValue={state} label="State" className={classes.input} onChange={(e) => setState(e.target.value)} />
                             <br />
                             <TextField id="standard-basic" defaultValue={zip} label="Zip Code" className={classes.input} onChange={(e) => setZip(e.target.value)} />
-                            <br />
-                            <TextField id="standard-basic" defaultValue={description} label="Description" className={classes.input} onChange={(e) => setDescription(e.target.value)} />
-                            <br />
-                            <form className={classes.container} noValidate>
-                            </form>
                             <br />
                             <Typography variant="body1">
                                 {error}
@@ -236,6 +201,7 @@ export default function Profile({ profile, updateProfile }) {
                     </div>
                 </Grid>
             </Grid>
+            <br /><br /><br />
         </div >
     )
 }

@@ -104,6 +104,7 @@ export default function Profile({ profile, updateProfile }) {
                     last_name: lastname,
                     gender: gender,
                     address: address,
+                    city: city,
                     state: state,
                     zip: zip,
                     dob: dob,
@@ -120,6 +121,7 @@ export default function Profile({ profile, updateProfile }) {
                     last_name: lastname,
                     gender: gender,
                     address: address,
+                    city: city,
                     state: state,
                     zip: zip,
                     dob: dob

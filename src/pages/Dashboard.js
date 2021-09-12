@@ -65,7 +65,11 @@ export default function Dashboard({ page, setPage }) {
             await updateRole();
         }
         if (role === "ORGANIZATION") {
-
+            let response = await request({
+                type: "GET",
+                path: `organization/${localStorage.getItem("email")}/` // change to any user
+            })
+            setProfile(response);
         }
         else {
             let response = await request({
