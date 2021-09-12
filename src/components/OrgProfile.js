@@ -3,7 +3,6 @@ import {
     Box, Button, Grid, makeStyles, TextField, Typography,
     InputLabel, MenuItem, FormHelperText, FormControl, Select, InputAdornment
 } from "@material-ui/core";
-import Rating from '@material-ui/lab/Rating';
 
 
 import { request } from "../util";
@@ -62,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Profile({ profile, updateProfile }) {
     const classes = useStyles();
     const [name, setName] = useState(profile.name || "");
-    const [email, setEmail] = useState(profile.email || "");
+    const [email, setEmail] = useState(localStorage.getItem("email") || "");
     const [website, setWebsite] = useState(profile.link || "");
     const [phone, setPhone] = useState(profile.phone || "");
     const [address, setAddress] = useState(profile.address || "");
@@ -177,8 +176,7 @@ export default function Profile({ profile, updateProfile }) {
                                 id="standard-basic"
                                 defaultValue={email}
                                 label="Email"
-                                className={classes.input}
-                                onChange={(e) => setEmail(e.target.value)} />
+                                className={classes.input} />
                             <br />
                             <TextField id="standard-basic" defaultValue={phone} label="Phone" className={classes.input} onChange={(e) => setPhone(e.target.value)} />
                             <br />

@@ -192,14 +192,9 @@ export default function Dashboard({ page, setPage }) {
                         alignItems="stretch"
                         spacing={3}
                         className={classes.container}>
-                        <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
+                        <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
                             <div className={classes.box}>
                                 <ProfileSummary profile={profile} />
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6} lg={5} xl={5} className={classes.grid}>
-                            <div className={classes.box}>
-                                <Stats log={log} />
                             </div>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} lg={10} xl={10} className={classes.grid}>
