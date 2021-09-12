@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Grid, makeStyles, TextField, Typography, 
-InputLabel, MenuItem, FormHelperText, FormControl, Select} from "@material-ui/core";
+InputLabel, MenuItem, FormHelperText, FormControl, Select, InputAdornment} from "@material-ui/core";
 import Rating from '@material-ui/lab/Rating';
 
 
@@ -49,10 +49,10 @@ const useStyles = makeStyles((theme) => ({
     },
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 120,
         flex: 1,
-        marginTop: -10,
-        marginRight: 40,
+        marginTop: -5,
+        marginLeft: -40,
+        minWidth: 100
     },
     selectEmpty: {
         marginTop: theme.spacing(2),
@@ -68,7 +68,13 @@ export default function Profile({ profile, updateProfile }) {
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState("");
     const [value, setValue] = useState(2);
-    const [age, setAge] = useState("");
+    const [count, setCount] = useState(0)
+    const [skillData, setSkills] = useState([
+        {
+          name: "Python",
+          strength: "1"
+        }
+    ]);
 
     async function editProfile() {
         let email = localStorage.getItem("email");
@@ -85,9 +91,73 @@ export default function Profile({ profile, updateProfile }) {
         console.log(response);
     }
 
-    const handleChange = (event) => {
-        setAge(event.target.value);
+    const updateSkill = index => e => {
+        console.log(index);
+        let newArr = [...skillData];
+        newArr[index].name = e.target.value;
+        setSkills(newArr);
+        console.log(skillData);
     };
+
+
+    const updateStrength = index => e => {
+        let newArr = [...skillData];
+        newArr[index].strength = e.target.value;
+        setSkills(newArr);
+
+    }
+
+    const deleteRow = index => e => {
+        let newArr = [...skillData];
+        newArr.splice(index, 1);
+        setSkills(newArr);
+    }
+
+
+    const appendRow = () => {
+        let newArr = [...skillData];
+        newArr.push({
+            name: "Python",
+            strength: "1" 
+        });
+        setSkills(newArr);
+    }
+
+    const SkillRow = ({ind}) => 
+    <div className={classes.row}>
+
+        <FormControl className={classes.formControl}>
+            <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={skillData[ind].name}
+                onChange={updateSkill(ind)}
+                >
+                <MenuItem value={"Java"}>Java</MenuItem>
+                <MenuItem value={"Python"}>Python</MenuItem>
+                <MenuItem value={"Communication"}>Communication</MenuItem>
+            </Select>
+        </FormControl>
+            <Rating
+                style = {{flex:1}}
+                precision = {0.5}
+                value={skillData[ind].strength}
+                onChange={updateStrength(ind)}
+                max = {5}
+            />
+
+        <Button 
+        variant="contained" 
+        color="primary" 
+        className={classes.button} 
+        onClick={deleteRow(ind)} 
+        style = {{flex:1, marginLeft: 5, maxHeight: 20, maxWidth: 20, minWidth: 20, minHeight: 20}}>
+            X
+        </Button>
+        
+
+    </div>
+
 
     return (
         <div >
@@ -102,7 +172,7 @@ export default function Profile({ profile, updateProfile }) {
                         <Typography variant="h3" >Edit Profile</Typography>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={10} md={6} lg={5} xl={5}>
+                <Grid item xs={12} sm={12} md={6} lg={5} xl={5}>
                     <div className={classes.box}>
                         <Typography variant="h6" >Personal Information</Typography>
                         <form autoComplete="off">
@@ -110,11 +180,23 @@ export default function Profile({ profile, updateProfile }) {
                             <br />
                             <TextField id="standard-basic" defaultValue={lastname} label="Last Name" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
                             <br />
+                            <TextField id="standard-basic" defaultValue={lastname} label="Gender" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
+                            <br />
                             <TextField id="standard-basic" defaultValue={lastname} label="Address" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
                             <br />
                             <TextField id="standard-basic" defaultValue={lastname} label="State" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
                             <br />
                             <TextField id="standard-basic" defaultValue={lastname} label="Zip Code" className={classes.input} onChange={(e) => setLastname(e.target.value)} />
+                            <br />
+                            <form className={classes.container} noValidate>
+                            <TextField
+                                id="date"
+                                label="Birthday"
+                                type="date"
+                                defaultValue="2017-05-24"
+                                className={classes.input}
+                            />
+                            </form>
                             <br />
                             <Typography variant="body1">
                                 {error}
@@ -126,32 +208,14 @@ export default function Profile({ profile, updateProfile }) {
                         </form>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={10} md={6} lg={5} xl={5}>
+                <Grid item xs={12} sm={12} md={6} lg={5} xl={5}>
                     <div className={classes.box}>
                         <Typography variant="h6" >Skills</Typography>
-                        <div className={classes.row}>
-                        <FormControl className={classes.formControl}>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={age}
-                                onChange={handleChange}
-                                >
-                                <MenuItem value={"Java"}>Java</MenuItem>
-                                <MenuItem value={"Python"}>Python</MenuItem>
-                                <MenuItem value={"Communication"}>Communication</MenuItem>
-                            </Select>
-                        </FormControl>
-                            <Rating
-                                style = {{flex:1}}
-                                name="simple-controlled"
-                                value={value}
-                                onChange={(event, newValue) => {
-                                    setValue(newValue);
-                                }}
-                                max = {10}
-                            />
-                        </div>
+
+                        { [...Array(skillData.length)].map((_, i) => <SkillRow ind = {i} key={i} />) }
+                        <Button variant="contained" color="secondary" className={classes.button} onClick={appendRow} style = {{marginTop: 20}}>
+                            Add a Skill
+                        </Button>
                     </div>
                 </Grid>
             </Grid>
